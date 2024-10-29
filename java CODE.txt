@@ -1,0 +1,260 @@
+import java.util.*;
+import java.util.regex.Pattern;
+
+class UserProfile {
+    String name;
+    int age;
+    String email;
+
+    public UserProfile(String name, int age, String email) {
+        this.name = name;
+        this.age = age;
+        this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "\t\tName: " + name + "\n\t\tAge: " + age + "\n\t\tEmail: " + email;
+    }
+}
+
+class ExamResult {
+    UserProfile user;
+    Exam exam;
+    int score;
+
+    public ExamResult(UserProfile user, Exam exam, int score) {
+        this.user = user;
+        this.exam = exam;
+        this.score = score;
+    }
+
+    @Override
+    public String toString() {
+        return "\n\n\n\t\t\t\t\t\t\t\tUser: " + user.name + "\n\n\t\t\t\t\t\t\t\tScore: " + score + " \tout of " + exam.questions.size();
+    }
+}
+
+class Question {
+    String question;
+    String[] options;
+    int correctAnswer;
+
+    public Question(String question, String[] options, int correctAnswer) {
+        this.question = question;
+        this.options = options;
+        this.correctAnswer = correctAnswer;
+    }
+}
+
+class Exam {
+    String subject;
+    List<Question> questions = new ArrayList<>();
+
+    public Exam(String subject) {
+        this.subject = subject;
+    }
+
+    public void addQuestion(Question question) {
+        questions.add(question);
+    }
+
+    public int startExam() {
+        Scanner scanner = new Scanner(System.in);
+        int score = 0;
+
+        for (int i = 0; i < questions.size(); i++) {
+            Question question = questions.get(i);
+            System.out.println((i + 1) + ". " + question.question);
+            for (int j = 0; j < question.options.length; j++) {
+                System.out.println((j + 1) + ". " + question.options[j]);
+            }
+            System.out.print("\t\t\t\t\t\t\t\tEnter your answer (1-" + question.options.length + "): ");
+            int answer = scanner.nextInt();
+            if (answer == question.correctAnswer) {
+                score++;
+            }
+        }
+
+        return score;
+    }
+}
+
+public class OnlineExamManagementSystem {
+    public static boolean isValidName(String name) {
+        return Pattern.matches("^[a-zA-Z]{1,20}$", name);
+    }
+
+    public static boolean isValidEmail(String email) {
+        return Pattern.matches("^[a-zA-Z0-9._]+@[a-zA-Z0-9]+\\.[a-zA-Z]{2,}$", email);
+    }
+
+    public static boolean isValidAge(int age) {
+        return age >= 15 && age <= 99;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        List<Exam> exams = new ArrayList<>();
+        List<ExamResult> examResults = new ArrayList<>();
+        List<UserProfile> userProfiles = new ArrayList<>();
+        UserProfile currentUserProfile = null;
+
+        // Create exams
+        Exam javaExam = new Exam("Java");
+        javaExam.addQuestion(new Question("Who invented Java Programming?\n", new String[]{"Guido van Rossum","James Gosling","Dennis Ritchie","Bjarne Stroustrup"}, 2));
+        javaExam.addQuestion(new Question("Which statement is true about Java?\n", new String[]{"Java is a sequence-dependent programming language", "Java is a code dependent programming language", "Java is a platform-dependent programming language", "Java is a platform-independent programming language"}, 4));
+        javaExam.addQuestion(new Question("Which keyword is used to define a class in Java?\n", new String[]{"class", "public", "void", "static"}, 1));
+        javaExam.addQuestion(new Question("Which data type is used to represent a single character in Java?\n", new String[]{"char", "int", "String", "boolean"}, 1));
+        javaExam.addQuestion(new Question("What is the output of the following code?\nSystem.out.println(5 + 2 * 3);\n", new String[]{"11", "21", "17", "15"}, 3));
+        exams.add(javaExam);
+
+        Exam htmlExam = new Exam("HTML");
+        htmlExam.addQuestion(new Question("What does HTML stand for?", new String[]{"Hyperlink and Text Markup Language", "Hyper Text Markup Language", "Hyper Transfer Markup Language", "Home Tool Markup Language"}, 2));
+        htmlExam.addQuestion(new Question("Which tag is used to define a hyperlink in HTML?", new String[]{"<a>", "<h1>", "<p>", "<div>"}, 1));
+        htmlExam.addQuestion(new Question("What is the correct HTML element for the largest heading?", new String[]{"<h1>", "<h6>", "<head>", "<heading>"}, 1));
+        htmlExam.addQuestion(new Question("Which HTML tag is used to define a table?", new String[]{"<table>", "<tr>", "<td>", "<th>"}, 1));
+        htmlExam.addQuestion(new Question("What is the correct HTML for inserting an image?", new String[]{"<img href='image.jpg' alt='MyImage'>", "<image src='image.jpg' alt='MyImage'>", "<img src='image.jpg' alt='MyImage'>", "<image href='image.jpg' alt='MyImage'>"}, 3));
+        exams.add(htmlExam);
+
+        Exam cssExam = new Exam("CSS");
+        cssExam.addQuestion(new Question("What does CSS stand for?", new String[]{"Cascading Style Sheet", "Colorful Style Sheet", "Computer Style Sheet", "Creative Style Sheet"}, 1));
+        cssExam.addQuestion(new Question("Which property is used to change the background color of an element?", new String[]{"color", "background-color", "background", "bgcolor"}, 2));
+        cssExam.addQuestion(new Question("Which CSS property is used to control the text size?", new String[]{"text-size", "font-style", "font-size", "text-style"}, 3));
+        cssExam.addQuestion(new Question("Which CSS property is used to control the spacing between lines of text?", new String[]{"line-height", "text-spacing", "letter-spacing", "word-spacing"}, 1));
+        cssExam.addQuestion(new Question("Which CSS property is used to add a background image to an element?", new String[]{"background-image", "image-url", "background-url", "image-source"}, 1));
+        exams.add(cssExam);
+
+        Exam javascriptExam = new Exam("JavaScript");
+        javascriptExam.addQuestion(new Question("Inside which HTML element do we put the JavaScript?", new String[]{"<js>", "<javascript>", "<script>", "<scripting>"}, 3));
+        javascriptExam.addQuestion(new Question("How do you write 'Hello World' in an alert box?", new String[]{"alert('Hello World');", "msgBox('Hello World');", "msg('Hello World');", "alertBox('Hello World');"}, 1));
+        javascriptExam.addQuestion(new Question("What is the correct way to write a JavaScript array?", new String[]{"var colors = 'red', 'green', 'blue';", "var colors = (1:'red', 2:'green', 3:'blue');", "var colors = ['red', 'green', 'blue'];", "var colors = 1 = ('red'), 2 = ('green'), 3 = ('blue');"}, 3));
+        javascriptExam.addQuestion(new Question("What is the correct way to write a JavaScript array?", new String[]{"[1, 2, 3, 4]", "{1, 2, 3, 4}", "(1, 2, 3, 4)", "1, 2, 3, 4"}, 1));
+        javascriptExam.addQuestion(new Question("Which operator is used to compare two values for equality in JavaScript?", new String[]{"==", "=", "===", "!=="}, 3));
+        exams.add(javascriptExam);
+
+        Exam cppExam = new Exam("C++");
+        cppExam.addQuestion(new Question("Which of the following is the correct syntax to declare a pointer?", new String[]{"int *ptr;", "int ptr;", "int $ptr;", "int #ptr;"}, 1));
+        cppExam.addQuestion(new Question("Which of the following is not a fundamental data type in C++?", new String[]{"int", "float", "char", "string"}, 4));
+        cppExam.addQuestion(new Question("Which operator is used to allocate memory dynamically in C++?", new String[]{"new", "malloc", "allocate", "alloc"}, 1));
+        cppExam.addQuestion(new Question("What is the result of the following expression?\n5 / 2", new String[]{"2.5", "2", "2.0", "2.25"}, 2));
+        cppExam.addQuestion(new Question("What is the output of the following code?\nint x = 5;\nint y = ++x;\ncout << y;", new String[]{"5", "6", "0", "1"}, 2));
+        exams.add(cppExam);
+
+        Exam sqlExam = new Exam("SQL");
+        sqlExam.addQuestion(new Question("What does SQL stand for?", new String[]{"Structured Query Language", "Structured Question Language", "Simple Query Language", "Standard Query Language"}, 1));
+        sqlExam.addQuestion(new Question("Which keyword is used to retrieve data from a SQL database?", new String[]{"SELECT", "UPDATE", "DELETE", "INSERT"}, 1));
+        sqlExam.addQuestion(new Question("Which statement is used to add data to a SQL table?", new String[]{"ADD", "INSERT", "UPDATE", "CREATE"}, 2));
+        sqlExam.addQuestion(new Question("Which SQL clause is used to filter records based on a specified condition?", new String[]{"WHERE", "GROUP BY", "HAVING", "ORDER BY"}, 1));
+        sqlExam.addQuestion(new Question("What is the result of the following SQL query?\nSELECT MAX(Price) FROM Products;", new String[]{"Maximum value in the 'Price' column of the 'Products' table", "Minimum value in the 'Price' column of the 'Products' table", "Average value in the 'Price' column of the 'Products' table", "Total number of rows in the 'Price' column of the 'Products' table"}, 1));
+        exams.add(sqlExam);
+
+        while (true) {
+            System.out.println("\n\n\n\n\n\n\t\t\t\t\t------------------ Online Exam Management System ------------------ \n\n\n");
+            System.out.println("\t\t\t\t\t\t\t\t1. Register");
+            System.out.println("\t\t\t\t\t\t\t\t2. Login");
+            System.out.println("\t\t\t\t\t\t\t\t3. Start Exam");
+            System.out.println("\t\t\t\t\t\t\t\t4. View Exam Result");
+            System.out.println("\t\t\t\t\t\t\t\t5. Exit");
+            System.out.print("\t\t\t\t\t\t\t\tEnter your choice: ");
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    scanner.nextLine(); // Clear the newline character
+                    System.out.print("\t\t\t\t\t\t\t\tEnter your name: ");
+                    String name = scanner.nextLine();
+                    while (!isValidName(name)) {
+                        System.out.println("\t\t\t\t\t\t\t\tInvalid name! Name should contain only alphabets and have a maximum length of 20 characters.");
+                        System.out.print("\t\t\t\t\t\t\t\tEnter your name: ");
+                        name = scanner.nextLine();
+                    }
+
+                    System.out.print("\t\t\t\t\t\t\t\tEnter your age: ");
+                    int age = scanner.nextInt();
+                    while (!isValidAge(age)) {
+                        System.out.println("\t\t\t\t\t\t\t\tInvalid age! Age should be between 15 and 99.");
+                        System.out.print("\t\t\t\t\t\t\t\tEnter your age: ");
+                        age = scanner.nextInt();
+                    }
+
+                    scanner.nextLine(); // Clear the newline character
+                    System.out.print("\t\t\t\t\t\t\t\tEnter your email: ");
+                    String email = scanner.nextLine();
+                    while (!isValidEmail(email)) {
+                        System.out.println("\t\t\t\t\t\t\t\tInvalid email address!");
+                        System.out.print("\t\t\t\t\t\t\t\tEnter your email: ");
+                        email = scanner.nextLine();
+                    }
+
+                    UserProfile userProfile = new UserProfile(name, age, email);
+                    userProfiles.add(userProfile);
+                    System.out.println("\t\t\t\t\t\t\t\tRegistration successful!");
+                    break;
+
+                case 2:
+                    scanner.nextLine(); // Clear the newline character
+                    System.out.print("\t\t\t\t\t\t\t\tEnter your email: ");
+                    String loginEmail = scanner.nextLine();
+                    boolean userFound = false;
+
+                    for (UserProfile profile : userProfiles) {
+                        if (profile.email.equals(loginEmail)) {
+                            currentUserProfile = profile;
+                            userFound = true;
+                            break;
+                        }
+                    }
+
+                    if (userFound) {
+                        System.out.println("\t\t\t\t\t\t\t\tLogin successful!");
+                    } else {
+                        System.out.println("\t\t\t\t\t\t\t\tUser not found! Please register first.");
+                    }
+                    break;
+
+                case 3:
+                    if (currentUserProfile == null) {
+                        System.out.println("\t\t\t\t\t\t\t\tYou need to login first!");
+                    } else {
+                        System.out.println("\n\n\n\n\n\n\t\t\t\t\t------------------ Select an exam to start ------------------\n\n\n");
+                        for (int i = 0; i < exams.size(); i++) {
+                            System.out.println("\t\t\t\t\t\t\t\t"+(i + 1) + ". " + exams.get(i).subject);
+                        }
+                        System.out.print("\t\t\t\t\t\t\t\tEnter your choice: ");
+                        int examChoice = scanner.nextInt();
+                        if (examChoice >= 1 && examChoice <= exams.size()) {
+                            Exam selectedExam = exams.get(examChoice - 1);
+                            int score = selectedExam.startExam();
+                            ExamResult examResult = new ExamResult(currentUserProfile, selectedExam, score);
+                            examResults.add(examResult);
+                            System.out.println("\t\t\t\t\t\t\t\tExam completed!");
+                        } else {
+                            System.out.println("\t\t\t\t\t\t\t\tInvalid choice!");
+                        }
+                    }
+                    break;
+
+                case 4:
+                    if (examResults.isEmpty()) {
+                        System.out.println("\t\t\t\t\t\t\t\tNo exam results found!");
+                    } else {
+                        for (ExamResult result : examResults) {
+                            System.out.println("\n                                        -------------------------- Exam Result --------------------------");
+                            System.out.println(result);
+                        }
+                    }
+                    break;
+
+                case 5:
+                    System.out.println("\t\t\t\t\t\t\t\tThank you for using the Online Exam Management System!");
+                    System.exit(0);
+                    break;
+
+                default:
+                    System.out.println("\t\t\t\t\t\t\t\tInvalid choice!");
+                    break;
+            }
+        }
+    }
+}
